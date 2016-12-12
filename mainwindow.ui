@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>459</width>
-    <height>387</height>
+    <height>388</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -161,17 +161,8 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QLabel" name="label_6">
-       <property name="text">
-        <string>Criado e Mantido por Pedro Fiuza Linhares.</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </widget>
-   <zorder>verticalLayoutWidget</zorder>
-   <zorder>verticalLayoutWidget_3</zorder>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
