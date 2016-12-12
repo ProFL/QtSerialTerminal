@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&availablePortsUpdate, SIGNAL(timeout()), this, SLOT(fillPorts()));
     availablePortsUpdate.start();
 
-    connect(ui->chkBoxAutomaticScroll, SIGNAL(stateChanged(int)), this, SLOT(autoScroll()));
+    connect(ui->chkBoxAutomaticScroll, SIGNAL(stateChanged()), this, SLOT(autoScroll()));
     connect(ui->buttonDisconnect, SIGNAL(clicked()), this, SLOT(disconnectSerial()));
 
     connect(ui->buttonSend, SIGNAL(clicked()), this, SLOT(sendMessage()));
@@ -179,8 +179,8 @@ void MainWindow::sendMessage()
     {
         serial.sendMessage(textToSend, sendType);
     }
-    catch(QString)
+    catch(QString & erro)
     {
-        ui->lineEditSendMessage->setText("MENSAGEM COM ERRO!");
+        ui->lineEditSendMessage->setText(erro);
     }
 }

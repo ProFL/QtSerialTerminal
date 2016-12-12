@@ -59,6 +59,11 @@ QString SerialPort::readLine()
 
 void SerialPort::sendMessage(const QString MESSAGE, const int TYPE)
 {
+    if (!connected)
+    {
+        throw QString("Não conectado!");
+    }
+
     bool success = true;
 
     if (TYPE == String)
