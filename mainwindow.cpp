@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    connect(ui->connectButton, SIGNAL(clicked(bool)), this, SLOT(connectSerial()));
+    connect(ui->buttonConnect, SIGNAL(clicked(bool)), this, SLOT(connectSerial()));
 
     serialUpdate.stop();
     connect(&serialUpdate, SIGNAL(timeout()), this, SLOT(readSerial()));
@@ -16,22 +16,22 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&availablePortsUpdate, SIGNAL(timeout()), this, SLOT(fillPorts()));
     availablePortsUpdate.start();
 
-    connect(ui->automaticScrollCB, SIGNAL(stateChanged(int)), this, SLOT(autoScroll()));
-    connect(ui->disconnectButton, SIGNAL(clicked()), this, SLOT(disconnectSerial()));
+    connect(ui->chkBoxAutomaticScroll, SIGNAL(stateChanged(int)), this, SLOT(autoScroll()));
+    connect(ui->buttonDisconnect, SIGNAL(clicked()), this, SLOT(disconnectSerial()));
 
-    ui->baudRateChoice->addItem(QString::number(QSerialPort::Baud1200));
-    ui->baudRateChoice->addItem(QString::number(QSerialPort::Baud2400));
-    ui->baudRateChoice->addItem(QString::number(QSerialPort::Baud4800));
-    ui->baudRateChoice->addItem(QString::number(QSerialPort::Baud9600));
-    ui->baudRateChoice->addItem(QString::number(QSerialPort::Baud19200));
-    ui->baudRateChoice->addItem(QString::number(QSerialPort::Baud38400));
-    ui->baudRateChoice->addItem(QString::number(QSerialPort::Baud57600));
-    ui->baudRateChoice->addItem(QString::number(QSerialPort::Baud115200));
+    ui->cbBoxBaud->addItem(QString::number(QSerialPort::Baud1200));
+    ui->cbBoxBaud->addItem(QString::number(QSerialPort::Baud2400));
+    ui->cbBoxBaud->addItem(QString::number(QSerialPort::Baud4800));
+    ui->cbBoxBaud->addItem(QString::number(QSerialPort::Baud9600));
+    ui->cbBoxBaud->addItem(QString::number(QSerialPort::Baud19200));
+    ui->cbBoxBaud->addItem(QString::number(QSerialPort::Baud38400));
+    ui->cbBoxBaud->addItem(QString::number(QSerialPort::Baud57600));
+    ui->cbBoxBaud->addItem(QString::number(QSerialPort::Baud115200));
 
-    ui->sendingTypeChoice->addItem("String");
-    ui->sendingTypeChoice->addItem("Decimal");
-    ui->sendingTypeChoice->addItem("Hexadecimal");
-    ui->sendingTypeChoice->addItem("Binário");
+    ui->cbBoxSendType->addItem("String");
+    ui->cbBoxSendType->addItem("Decimal");
+    ui->cbBoxSendType->addItem("Hexadecimal");
+    ui->cbBoxSendType->addItem("Binário");
 }
 
 MainWindow::~MainWindow()
@@ -41,17 +41,17 @@ MainWindow::~MainWindow()
 
 void MainWindow::autoScroll()
 {
-    if (ui->automaticScrollCB->isChecked())
+    if (ui->chkBoxAutomaticScroll->isChecked())
     {
-        QTextCursor cursor = ui->incoming_TE->textCursor();
+        QTextCursor cursor = ui->textEditIncoming->textCursor();
         cursor.movePosition(QTextCursor::End);
-        ui->incoming_TE->setTextCursor(cursor);
+        ui->textEditIncoming->setTextCursor(cursor);
     }
     else
     {
-        QTextCursor cursor = ui->incoming_TE->textCursor();
+        QTextCursor cursor = ui->textEditIncoming->textCursor();
         cursor.movePosition(QTextCursor::Start);
-        ui->incoming_TE->setTextCursor(cursor);
+        ui->textEditIncoming->setTextCursor(cursor);
     }
 }
 
@@ -60,17 +60,17 @@ void MainWindow::fillPorts()
     QList<QSerialPortInfo> serialPortList = serial.getPortList();
     int n = serialPortList.size();
 
-    ui->portChoice->clear();
+    ui->cbBoxPort->clear();
 
     if (n == 0)
     {
-        ui->portChoice->addItem("N/A");
+        ui->cbBoxPort->addItem("N/A");
     }
     else
     {
         for (int i = 0; i < n; i++)
         {
-            ui->portChoice->addItem(serialPortList.at(i).portName());
+            ui->cbBoxPort->addItem(serialPortList.at(i).portName());
         }
     }
 }
@@ -78,26 +78,26 @@ void MainWindow::fillPorts()
 void MainWindow::connectSerial()
 {
     bool success;
-    int baudRate = ui->baudRateChoice->currentText().toInt(&success);
+    int baudRate = ui->cbBoxBaud->currentText().toInt(&success);
 
     if (!success)
     {
-        ui->incoming_TE->setText("Baud rate inválida!");
+        ui->textEditIncoming->setText("Baud rate inválida!");
         return;
     }
 
-    int serialPortIndex = ui->portChoice->currentIndex();
+    int serialPortIndex = ui->cbBoxPort->currentIndex();
 
     success = serial.portConnect(serialPortIndex, baudRate);
 
     if (!success)
     {
-        ui->incoming_TE->setText("Impossível Conectar!");
-        ui->incoming_TE->append("\n");
+        ui->textEditIncoming->setText("Impossível Conectar!");
+        ui->textEditIncoming->append("\n");
         return;
     }
 
-    ui->incoming_TE->setText("Connectado com sucesso.");
+    ui->textEditIncoming->setText("Connectado com sucesso.");
 
     if (serialUpdate.isActive())
     {
@@ -110,8 +110,8 @@ void MainWindow::connectSerial()
     int n = QSerialPortInfo::availablePorts().size();
     for (int i = 0; i < n; i++)
     {
-        ui->portChoice->clear();
-        ui->portChoice->addItem(QSerialPortInfo::availablePorts().at(i).portName());
+        ui->cbBoxPort->clear();
+        ui->cbBoxPort->addItem(QSerialPortInfo::availablePorts().at(i).portName());
     }
 }
 
@@ -128,7 +128,7 @@ void MainWindow::disconnectSerial()
         catch(QString)
         {}
 
-        ui->incoming_TE->append("Desconectado com sucesso.");
+        ui->textEditIncoming->append("Desconectado com sucesso.");
     }
 }
 
@@ -142,33 +142,33 @@ void MainWindow::readSerial()
     }
     catch (QString &error)
     {
-        ui->incoming_TE->setText("ERRO: ");
-        ui->incoming_TE->append(error);
+        ui->textEditIncoming->setText("ERRO: ");
+        ui->textEditIncoming->append(error);
     }
 
     if (message.size() > 0)
     {
-        ui->incoming_TE->append(message);
+        ui->textEditIncoming->append(message);
     }
 
-    if (ui->automaticScrollCB->isChecked())
+    if (ui->chkBoxAutomaticScroll->isChecked())
     {
-        QTextCursor cursor = ui->incoming_TE->textCursor();
+        QTextCursor cursor = ui->textEditIncoming->textCursor();
         cursor.movePosition(QTextCursor::End);
-        ui->incoming_TE->setTextCursor(cursor);
+        ui->textEditIncoming->setTextCursor(cursor);
     }
 }
 
 void MainWindow::on_clearButton_clicked()
 {
-    ui->incoming_TE->clear();
+    ui->textEditIncoming->clear();
 }
 
 
 void MainWindow::on_sendButton_clicked()
 {
-    QString textToSend = ui->sendMessage_LE->text();
-    int sendType = ui->sendingTypeChoice->currentIndex();
+    QString textToSend = ui->lineEditSendMessage->text();
+    int sendType = ui->cbBoxSendType->currentIndex();
 
     try
     {
@@ -176,6 +176,6 @@ void MainWindow::on_sendButton_clicked()
     }
     catch(QString)
     {
-        ui->sendMessage_LE->setText("MENSAGEM COM ERRO!");
+        ui->lineEditSendMessage->setText("MENSAGEM COM ERRO!");
     }
 }
