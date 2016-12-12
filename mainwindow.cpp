@@ -19,6 +19,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->chkBoxAutomaticScroll, SIGNAL(stateChanged(int)), this, SLOT(autoScroll()));
     connect(ui->buttonDisconnect, SIGNAL(clicked()), this, SLOT(disconnectSerial()));
 
+    connect(ui->buttonSend, SIGNAL(clicked()), this, SLOT(sendMessage()));
+    connect(ui->lineEditSendMessage, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
+
+    connect(ui->buttonClear, SIGNAL(clicked()), this, SLOT(clearIncoming()));
+
     ui->cbBoxBaud->addItem(QString::number(QSerialPort::Baud1200));
     ui->cbBoxBaud->addItem(QString::number(QSerialPort::Baud2400));
     ui->cbBoxBaud->addItem(QString::number(QSerialPort::Baud4800));
@@ -159,13 +164,13 @@ void MainWindow::readSerial()
     }
 }
 
-void MainWindow::on_clearButton_clicked()
+void MainWindow::clearIncoming()
 {
     ui->textEditIncoming->clear();
 }
 
 
-void MainWindow::on_sendButton_clicked()
+void MainWindow::sendMessage()
 {
     QString textToSend = ui->lineEditSendMessage->text();
     int sendType = ui->cbBoxSendType->currentIndex();

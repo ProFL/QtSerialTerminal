@@ -26,8 +26,8 @@ private slots:
     void disconnectSerial();
     void readSerial();
 
-    void on_clearButton_clicked();
-    void on_sendButton_clicked();
+    void clearIncoming();
+    void sendMessage();
 
 public:
     explicit MainWindow(QWidget *parent = 0);

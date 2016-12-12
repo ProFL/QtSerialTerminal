@@ -169,7 +169,7 @@
          <widget class="QTextEdit" name="textEditIncoming"/>
         </item>
         <item>
-         <widget class="QPushButton" name="clearButton">
+         <widget class="QPushButton" name="buttonClear">
           <property name="text">
            <string>Limpar Recebido</string>
           </property>
